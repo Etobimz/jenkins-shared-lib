@@ -2,7 +2,7 @@
 
 def call () {
 
-     echo "Building the application..."
+     echo "Building the application... ${BRANCH_NAME}"
                     sh 'mvn package'
 
 
