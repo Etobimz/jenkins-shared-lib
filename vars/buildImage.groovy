@@ -1,19 +1,20 @@
+#!/usr/bin/env groovy
 
+def call(String imageName) {
+    echo "Building the Docker image: ${imageName}"
 
-def call () {
-
- echo "building the docker image..."
-    withCredentials([usernamePassword(credentialsId:'docker-gub-maven-rep', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD' )])
-        {
-            sh '''
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker build -t java-maven-app:2.0 .
-            docker tag java-maven-app:2.0 $DOCKER_USERNAME/java-maven-app:2.0
-            docker push $DOCKER_USERNAME/java-maven-app:2.0
-
-            '''
-         }
-
-
-
+    withCredentials([
+        usernamePassword(
+            credentialsId: 'docker-gub-maven-rep',
+            usernameVariable: 'DOCKER_USERNAME',
+            passwordVariable: 'DOCKER_PASSWORD'
+        )
+    ]) {
+        sh """
+            echo "\$DOCKER_PASSWORD" | docker login -u "\$DOCKER_USERNAME" --password-stdin
+            docker build -t ${imageName} .
+            docker tag ${imageName} \$DOCKER_USERNAME/${imageName}
+            docker push \$DOCKER_USERNAME/${imageName}
+        """
+    }
 }
